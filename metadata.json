@@ -1,0 +1,8 @@
+{
+  "name": "Heino Xide — Cinematic Aerial Films & 3D Drone Studio",
+  "description": "Official cinematography portfolio of Heino Xide (Hein Thu Tun) — High-performance drone films, 3D interactive aerial equipment workbench, and coastal documentaries of Rakhine. Maintained by Hein Sitt Tun.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

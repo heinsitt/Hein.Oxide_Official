@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heino Xide — The World Is Originally In Peace</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          black: '#07090a',
+          panel: '#0d1210',
+          dgreen: '#111d16',
+          deep: '#1c3225',
+          sunset: '#d9803f',
+          gold: '#e9be86',
+          cream: '#f3ede2',
+        },
+        fontFamily: {
+          serif: ['Fraunces','serif'],
+          sans: ['Inter','sans-serif'],
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html{scroll-behavior:smooth;}
+  body{background:#07090a;color:#f3ede2;font-family:'Inter',sans-serif;font-weight:300;overflow-x:hidden;}
+  ::selection{background:#d9803f;color:#07090a;}
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:#07090a;}
+  ::-webkit-scrollbar-thumb{background:#1c3225;border-radius:4px;}
+
+  .mist{color:rgba(243,237,226,.62);}
+  .hair{border-color:rgba(243,237,226,.14);}
+
+  .nav-link{position:relative;padding-bottom:4px;}
+  .nav-link::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:#f3ede2;transition:width .35s ease;}
+  .nav-link:hover::after{width:100%;}
+
+  .hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+  .hero-vignette{
+    position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(120% 80% at 50% 100%, rgba(7,9,10,.92) 0%, rgba(7,9,10,0) 48%),
+      linear-gradient(180deg, rgba(7,9,10,.72) 0%, rgba(7,9,10,.25) 26%, rgba(7,9,10,.35) 68%, rgba(7,9,10,.95) 100%);
+  }
+  .scroll-line{width:1px;height:46px;background:linear-gradient(rgba(243,237,226,.62),transparent);position:relative;overflow:hidden;}
+  .scroll-line::after{content:'';position:absolute;top:-46px;left:0;width:100%;height:46px;background:linear-gradient(#d9803f,transparent);animation:hint-fall 2.2s ease-in-out infinite;}
+  @keyframes hint-fall{0%{top:-46px;}100%{top:46px;}}
+
+  .wind{position:relative;height:1px;width:100%;background:rgba(243,237,226,.14);overflow:visible;}
+  .wind .gust{position:absolute;top:-1px;left:-10%;width:14%;height:2px;background:linear-gradient(90deg,transparent,#d9803f,transparent);opacity:.75;}
+
+  .btn{
+    position:relative;display:inline-flex;align-items:center;gap:10px;
+    padding:16px 34px;border:1px solid rgba(243,237,226,.3);border-radius:100px;
+    font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:#f3ede2;
+    overflow:hidden;transition:border-color .4s,color .4s;
+  }
+  .btn::before{content:'';position:absolute;inset:0;background:#d9803f;transform:translateY(101%);transition:transform .45s cubic-bezier(.6,0,.2,1);z-index:-1;}
+  .btn:hover{border-color:#d9803f;color:#0a0d0a;}
+  .btn:hover::before{transform:translateY(0);}
+  .btn-ghost{border-color:rgba(243,237,226,.18);color:rgba(243,237,226,.62);font-size:12px;}
+  .btn-ghost:hover{color:#f3ede2;border-color:rgba(243,237,226,.4);}
+  .btn-ghost::before{display:none;}
+
+  .vcard{perspective:1000px;}
+  .vcard-inner{position:relative;border-radius:6px;overflow:hidden;transform-style:preserve-3d;transition:transform .25s ease;background:#0d1210;}
+  .vthumb{position:relative;aspect-ratio:16/10;overflow:hidden;}
+  .vthumb .art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08);transition:transform .6s cubic-bezier(.2,.7,.2,1);}
+  .vcard-inner:hover .art{transform:scale(1.16);}
+  .vthumb .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,9,10,0) 40%,rgba(7,9,10,.88) 100%);}
+  .vthumb .dur{position:absolute;bottom:10px;right:10px;font-size:11px;background:rgba(7,9,10,.72);padding:3px 8px;border-radius:3px;}
+  .vthumb .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.7);width:52px;height:52px;border-radius:50%;border:1px solid rgba(243,237,226,.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .35s,transform .35s;background:rgba(7,9,10,.35);backdrop-filter:blur(2px);}
+  .vcard-inner:hover .play{opacity:1;transform:translate(-50%,-50%) scale(1);}
+  .vthumb .play::before{content:'';border-style:solid;border-width:7px 0 7px 11px;border-color:transparent transparent transparent #f3ede2;margin-left:3px;}
+
+  .fade-up{opacity:0;transform:translateY(46px);}
+
+  .sub-btn{display:inline-flex;align-items:center;gap:12px;padding:19px 42px;border-radius:100px;background:#f3ede2;color:#07090a;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;transition:transform .35s ease,background .35s;}
+  .sub-btn:hover{transform:translateY(-3px);background:#d9803f;}
+
+  /* ===== GEAR SECTION ===== */
+  .gear-wrap{display:flex;flex-direction:column;gap:12px;}
+  @media(min-width:768px){
+    .gear-wrap{flex-direction:row;height:520px;}
+  }
+  .gear-panel{
+    position:relative;flex:1;overflow:hidden;border-radius:8px;cursor:pointer;
+    transition:flex .7s cubic-bezier(.2,.7,.2,1);
+    min-height:300px;
+  }
+  @media(min-width:768px){
+    .gear-panel{min-height:auto;}
+    .gear-panel:hover{flex:1.9;}
+  }
+  .gear-panel img{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    transition:transform .8s cubic-bezier(.2,.7,.2,1);
+  }
+  .gear-panel:hover img{transform:scale(1.06);}
+  .gear-panel .overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(7,9,10,.05) 0%,rgba(7,9,10,.65) 60%,rgba(7,9,10,.92) 100%);
+    transition:background .5s ease;
+  }
+  .gear-panel:hover .overlay{background:linear-gradient(180deg,rgba(7,9,10,.15) 0%,rgba(7,9,10,.45) 60%,rgba(7,9,10,.82) 100%);}
+  .gear-panel .info{
+    position:absolute;bottom:0;left:0;right:0;padding:24px;z-index:2;
+  }
+  .gear-panel .tag{
+    font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#d9803f;margin-bottom:8px;
+    opacity:1;transform:translateY(0);transition:all .45s ease;
+  }
+  @media(min-width:768px){
+    .gear-panel .tag{opacity:0;transform:translateY(10px);}
+    .gear-panel:hover .tag{opacity:1;transform:translateY(0);}
+  }
+  .gear-panel h3{
+    font-family:'Fraunces',serif;font-size:1.45rem;font-weight:400;color:#f3ede2;margin-bottom:6px;
+  }
+  @media(min-width:768px){
+    .gear-panel h3{font-size:1.7rem;}
+  }
+  .gear-panel p{
+    font-size:13px;line-height:1.7;color:rgba(243,237,226,.62);max-width:260px;
+    opacity:1;transform:translateY(0);transition:all .45s ease .08s;
+  }
+  @media(min-width:768px){
+    .gear-panel p{opacity:0;transform:translateY(10px);}
+    .gear-panel:hover p{opacity:1;transform:translateY(0);}
+  }
+  .gear-panel.mobile-active{flex:1.6;}
+  .gear-panel.mobile-active .tag,
+  .gear-panel.mobile-active p{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body class="antialiased">
+
+<!-- NAV -->
+<nav class="fixed top-0 left-0 w-full z-[100] flex items-center justify-between px-[6vw] py-5 md:py-7 mix-blend-difference">
+  <a href="#hero" class="flex items-center gap-2.5 md:gap-3">
+    <img src="logo.jpg" alt="Heino Xide" class="h-7 md:h-8 w-auto rounded-sm" style="mix-blend-mode:normal;">
+    <span class="font-serif text-[17px] md:text-[19px] font-medium tracking-tight nav-link">Heino Xide</span>
+  </a>
+  <div class="hidden md:flex gap-9 text-[12.5px] tracking-[.14em] uppercase mist">
+    <a href="#about" class="nav-link">About</a>
+    <a href="#videos" class="nav-link">Videos</a>
+    <a href="#gear" class="nav-link">Gear</a>
+    <a href="#subscribe" class="nav-link">Subscribe</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="relative h-[100svh] w-full overflow-hidden flex items-center justify-center bg-black">
+  <video id="hero-video" class="hero-video" autoplay muted playsinline poster="hero-poster.jpg">
+    <source src="hero-drone.mp4" type="video/mp4">
+  </video>
+  <div class="hero-vignette"></div>
+
+  <div class="relative z-[3] flex flex-col items-center text-center px-6">
+    <div id="hero-eyebrow" class="fade-up text-[11.5px] tracking-[.32em] uppercase text-gold mb-5 font-normal">Drone &bull; Nature &bull; Travel</div>
+    <h1 id="hero-title" class="fade-up font-serif font-normal leading-[.92] tracking-tight text-[clamp(3.2rem,10vw,8.2rem)] text-cream">
+      Heino <em class="italic text-sunset font-light">Xide</em>
+    </h1>
+    <p id="hero-sub" class="fade-up mt-6 max-w-xl text-[15.5px] leading-[1.75] mist italic font-serif">
+      "The world is originally in peace."
+    </p>
+    <div id="hero-cta" class="fade-up mt-11 flex gap-4 items-center flex-wrap justify-center">
+      <a href="#videos" class="btn">Watch Videos</a>
+      <a href="https://www.youtube.com/@heinoxide5128" target="_blank" class="btn btn-ghost">110 Subscribers &rarr;</a>
+    </div>
+  </div>
+
+  <div id="scroll-hint" class="fade-up absolute bottom-9 left-1/2 -translate-x-1/2 z-[3] flex flex-col items-center gap-2.5">
+    <span class="text-[10px] tracking-[.28em] uppercase mist">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="wind"><div class="gust"></div></div>
+
+<!-- ABOUT -->
+<section id="about" class="py-40 md:py-48 overflow-hidden">
+  <div class="max-w-[1240px] mx-auto px-[6vw] grid grid-cols-1 md:grid-cols-[.9fr_1.1fr] gap-14 md:gap-20 items-center">
+    <div class="fade-up relative aspect-[4/5] rounded overflow-hidden">
+      <img src="about-photo.jpg" alt="Heino Xide" class="absolute inset-0 w-full h-full object-cover" style="object-position:center 20%;">
+      <div class="absolute inset-0" style="background:radial-gradient(120% 90% at 20% 0%, rgba(217,128,63,.18), transparent 55%);"></div>
+      <div class="absolute bottom-0 left-0 w-full h-[46%]" style="background:linear-gradient(180deg,transparent,rgba(5,7,6,.9) 92%);"></div>
+      <p class="absolute bottom-8 left-8 right-8 font-serif italic text-[15px] leading-relaxed mist">
+        "Every horizon I film is borrowed — from the hills, the tide, the people who were here first."
+      </p>
+    </div>
+    <div>
+      <div class="fade-up text-[11px] tracking-[.3em] uppercase text-sunset mb-4 flex items-center gap-3.5">
+        <span class="w-6 h-px bg-sunset"></span>About the channel
+      </div>
+      <h2 class="fade-up font-serif font-normal leading-[1.15] text-[clamp(2.1rem,3.6vw,3.1rem)] mb-7">
+        Cinematic stillness, <em class="italic text-sunset font-light">carried by wind</em> and rotor blades.
+      </h2>
+      <p class="fade-up text-[15.5px] leading-[1.9] mist max-w-xl mb-5">
+        Heino Xide is a one-person film practice built around a Mavic Air 2 and a quiet respect for the land it flies over — the coastlines of Kyaukphyu, the hills of Rakhine, and the small human moments in between.
+      </p>
+      <p class="fade-up text-[15.5px] leading-[1.9] mist max-w-xl mb-5">
+        Each video is graded slowly, scored gently, and released without hurry. The channel isn't chasing scale — it's keeping a record of places worth remembering exactly as they felt.
+      </p>
+      <div class="fade-up flex gap-12 mt-10 flex-wrap">
+        <div><b class="block font-serif text-[2.1rem] font-normal text-cream">110</b><span class="text-[11px] tracking-[.2em] uppercase mist">Subscribers</span></div>
+        <div><b class="block font-serif text-[2.1rem] font-normal text-cream">22</b><span class="text-[11px] tracking-[.2em] uppercase mist">Films Released</span></div>
+        <div><b class="block font-serif text-[2.1rem] font-normal text-cream">Rakhine</b><span class="text-[11px] tracking-[.2em] uppercase mist">Home Coast</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wind"><div class="gust"></div></div>
+
+<!-- VIDEOS -->
+<section id="videos" class="py-40 md:py-48">
+  <div class="max-w-[1240px] mx-auto px-[6vw]">
+    <div class="flex justify-between items-end flex-wrap gap-6 mb-16">
+      <div>
+        <div class="fade-up text-[11px] tracking-[.3em] uppercase text-sunset mb-4 flex items-center gap-3.5"><span class="w-6 h-px bg-sunset"></span>Latest uploads</div>
+        <h2 class="fade-up font-serif font-normal text-[clamp(2.2rem,4vw,3.4rem)]">Featured films</h2>
+      </div>
+      <a href="https://www.youtube.com/@heinoxide5128/videos" target="_blank" class="fade-up btn btn-ghost">All 22 videos &rarr;</a>
+    </div>
+    <div id="video-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"></div>
+  </div>
+</section>
+
+<div class="wind"><div class="gust"></div></div>
+
+<!-- GEAR -->
+<section id="gear" class="py-40 md:py-48" style="background:linear-gradient(180deg, transparent, rgba(28,50,37,.16) 40%, transparent);">
+  <div class="max-w-[1240px] mx-auto px-[6vw]">
+    <div class="max-w-xl mb-16">
+      <div class="fade-up text-[11px] tracking-[.3em] uppercase text-sunset mb-4 flex items-center gap-3.5"><span class="w-6 h-px bg-sunset"></span>Equipment</div>
+      <h2 class="fade-up font-serif font-normal leading-[1.16] text-[clamp(2.2rem,4vw,3.4rem)]">Tools that carry the <em class="italic text-sunset font-light">vision.</em></h2>
+      <p class="fade-up mt-5 text-[15px] mist leading-[1.85] max-w-lg">The gear behind every frame — compact, reliable, and always ready for the next horizon.</p>
+    </div>
+  </div>
+
+  <div class="max-w-[1240px] mx-auto px-[6vw] fade-up">
+    <div class="gear-wrap">
+
+      <div class="gear-panel" data-gear="osmo">
+        <img src="djiosmopocket.jpg" alt="DJI Osmo Pocket" loading="lazy">
+        <div class="overlay"></div>
+        <div class="info">
+          <div class="tag">Gimbal Camera</div>
+          <h3>DJI Osmo Pocket</h3>
+          <p>Pocket-sized stabilized footage for run-and-gun moments on the coast.</p>
+        </div>
+      </div>
+
+      <div class="gear-panel" data-gear="mavic">
+        <img src="djimavicair2.jpg" alt="DJI Mavic Air 2" loading="lazy">
+        <div class="overlay"></div>
+        <div class="info">
+          <div class="tag">Drone</div>
+          <h3>DJI Mavic Air 2</h3>
+          <p>The workhorse for every aerial perspective over Rakhine's coastline.</p>
+        </div>
+      </div>
+
+      <div class="gear-panel" data-gear="spark">
+        <img src="djispark.jpg" alt="DJI Spark" loading="lazy">
+        <div class="overlay"></div>
+        <div class="info">
+          <div class="tag">Entry Drone</div>
+          <h3>DJI Spark</h3>
+          <p>Where the flight journey began — small, nimble, and fearless.</p>
+        </div>
+      </div>
+
+      <div class="gear-panel" data-gear="sony">
+        <img src="sonyzv-e10.jpg" alt="Sony ZV-E10" loading="lazy">
+        <div class="overlay"></div>
+        <div class="info">
+          <div class="tag">Mirrorless</div>
+          <h3>Sony ZV-E10</h3>
+          <p>Vlogging powerhouse with Sigma 30mm f/1.4 for that creamy bokeh.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SUBSCRIBE / FOOTER -->
+<footer id="subscribe" class="relative pt-40 md:pt-52 pb-16 md:pb-20 overflow-hidden">
+  <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline poster="subscribe-poster.jpg">
+    <source src="subscribe-bg.mp4" type="video/mp4">
+  </video>
+  <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(7,9,10,.88) 0%, rgba(7,9,10,.82) 40%, rgba(7,9,10,.94) 100%);"></div>
+
+  <div class="relative z-[2] max-w-[1240px] mx-auto px-[6vw] text-center mb-28 md:mb-32">
+    <div class="fade-up text-[11px] tracking-[.3em] uppercase text-sunset mb-4 flex items-center justify-center gap-3.5">Join the flight</div>
+    <h2 class="fade-up font-serif font-normal leading-[1] text-[clamp(2.6rem,7vw,5.6rem)] mb-14 md:mb-16">
+      Come watch the <em class="italic text-sunset font-light">world breathe.</em>
+    </h2>
+    <div class="fade-up flex flex-col items-center gap-5">
+      <a href="https://www.youtube.com/@heinoxide5128?sub_confirmation=1" target="_blank" class="sub-btn">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="w-[18px] h-[18px]"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.4 3.6-6.4 3.6Z"/></svg>
+        Subscribe on YouTube
+      </a>
+      <a href="https://www.facebook.com/planet.heinoxide" target="_blank" rel="noopener" class="inline-flex items-center gap-2.5 text-[12.5px] tracking-[.14em] uppercase text-cream/55 hover:text-sunset transition-colors duration-300">
+        <svg class="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Follow on Facebook
+      </a>
+    </div>
+  </div>
+
+  <div class="relative z-[2] max-w-[1240px] mx-auto px-[6vw] flex justify-between items-center flex-wrap gap-6 pt-10 border-t hair text-[12px] mist">
+    <div class="font-serif italic text-[15px] mist">"respect all beings"</div>
+    <div class="flex gap-7">
+      <a href="https://www.youtube.com/@heinoxide5128" target="_blank" class="hover:text-cream transition-colors">YouTube</a>
+      <a href="https://www.facebook.com/planet.heinoxide" target="_blank" class="hover:text-cream transition-colors">Facebook</a>
+      <a href="#about" class="hover:text-cream transition-colors">About</a>
+      <a href="#videos" class="hover:text-cream transition-colors">Videos</a>
+    </div>
+    <div>&copy; Heino Xide — Kyaukphyu, Myanmar</div>
+  </div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ---------- videos ---------- */
+const videos = [
+  {t:"Mavic Air 2 on Arakan Land, Kyaukphyu", meta:"1.5K views · 4 years ago", dur:"2:50", img:"thumb-kyaukphyu.jpg", url:"https://www.youtube.com/watch?v=RanG4seGYcU&t=4s"},
+  {t:"Sony ZV-E10 x Sigma 30mm f1.4 | Rakhine, Kyaukphyu", meta:"780 views · 2 years ago", dur:"1:19", img:"thumb-august.jpg", url:"https://www.youtube.com/watch?v=6w71gfyVjcY"},
+  {t:"Homesick", meta:"363 views · 5 years ago", dur:"2:21", img:"thumb-homesick.jpg", url:"https://www.youtube.com/watch?v=pNv5BvziQSA&t=1s"},
+  {t:"HOPE", meta:"115 views · 5 years ago", dur:"1:21", img:"thumb-hope.jpg", url:"https://www.youtube.com/watch?v=bkp-zhMlH-c"},
+  {t:"Monn", meta:"190 views · 5 years ago", dur:"1:36", img:"thumb-monn.jpg", url:"https://www.youtube.com/watch?v=OqAjsYttrBA"},
+  {t:"Drone Showreel 2020", meta:"128 views · 5 years ago", dur:"1:46", img:"thumb-showreel.jpg", url:"https://www.youtube.com/watch?v=CHKP7huSCns"}
+];
+const grid = document.getElementById('video-grid');
+videos.forEach(v=>{
+  const card = document.createElement('a');
+  card.href = v.url; card.target = '_blank'; card.rel = 'noopener';
+  card.className = 'vcard fade-up block';
+  card.innerHTML = `
+    <div class="vcard-inner">
+      <div class="vthumb">
+        <img class="art" src="${v.img}" alt="${v.t}" loading="lazy">
+        <div class="shade"></div>
+        <div class="dur">${v.dur}</div>
+        <div class="play"></div>
+      </div>
+      <div class="p-5 pb-6">
+        <h3 class="font-medium text-[15.5px] mb-2 tracking-tight">${v.t}</h3>
+        <div class="text-[11.5px] mist tracking-wide">${v.meta}</div>
+      </div>
+    </div>`;
+  grid.appendChild(card);
+  const inner = card.querySelector('.vcard-inner');
+  card.addEventListener('mousemove', e=>{
+    const r = card.getBoundingClientRect();
+    const px = (e.clientX - r.left)/r.width - .5;
+    const py = (e.clientY - r.top)/r.height - .5;
+    inner.style.transform = `rotateY(${px*10}deg) rotateX(${-py*10}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave', ()=>{ inner.style.transform = 'rotateY(0) rotateX(0) translateY(0)'; });
+});
+
+/* wind gusts */
+document.querySelectorAll('.wind .gust').forEach((g,i)=>{
+  gsap.to(g,{left:'104%',duration:7+i,repeat:-1,ease:'power1.inOut',delay:i*1.3});
+});
+
+/* hero entrance */
+gsap.timeline({delay:0.3})
+  .to('#hero-eyebrow',{opacity:1,y:0,duration:1,ease:'power3.out'})
+  .to('#hero-title',{opacity:1,y:0,duration:1.1,ease:'power3.out'}, '-=0.7')
+  .to('#hero-sub',{opacity:1,y:0,duration:1,ease:'power3.out'}, '-=0.7')
+  .to('#hero-cta',{opacity:1,y:0,duration:1,ease:'power3.out'}, '-=0.6')
+  .to('#scroll-hint',{opacity:1,y:0,duration:1,ease:'power3.out'}, '-=0.6');
+
+/* scroll reveals */
+gsap.utils.toArray('.fade-up').forEach(el=>{
+  if(['hero-eyebrow','hero-title','hero-sub','hero-cta','scroll-hint'].includes(el.id)) return;
+  gsap.to(el,{opacity:1,y:0,duration:1.1,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 88%'}
+  });
+});
+
+/* hero video parallax */
+gsap.to('.hero-video',{
+  scale:1.12, ease:'none',
+  scrollTrigger:{trigger:'body',start:'top top',end:'80% top',scrub:1}
+});
+
+/* =========================================================
+   HERO VIDEO LOOP — Desktop: ping-pong  |  Mobile: native loop
+   ========================================================= */
+(function(){
+  const vid = document.getElementById('hero-video');
+  if(!vid) return;
+
+  const isMobile = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+
+  if(isMobile){
+    vid.loop = true;
+    vid.playbackRate = 0.85;
+    vid.play().catch(()=>{});
+    return;
+  }
+
+  let mode = 'forward';
+  let lastT = null;
+  const EPS = 0.06;
+
+  function reverseStep(now){
+    if(mode !== 'reverse'){ lastT = null; return; }
+    if(lastT === null){ lastT = now; requestAnimationFrame(reverseStep); return; }
+    const dt = (now - lastT) / 1000;
+    lastT = now;
+    let next = vid.currentTime - dt;
+    if(next <= 0){
+      vid.currentTime = 0;
+      mode = 'forward';
+      lastT = null;
+      vid.play().catch(()=>{});
+      return;
+    }
+    vid.currentTime = next;
+    requestAnimationFrame(reverseStep);
+  }
+
+  vid.addEventListener('timeupdate', ()=>{
+    if(mode === 'forward' && vid.duration && vid.currentTime >= vid.duration - EPS){
+      mode = 'reverse';
+      vid.pause();
+      lastT = null;
+      requestAnimationFrame(reverseStep);
+    }
+  });
+
+  vid.addEventListener('loadedmetadata', ()=>{ vid.play().catch(()=>{}); });
+})();
+
+/* ===== GEAR PANELS — mobile tap to expand ===== */
+(function(){
+  const panels = document.querySelectorAll('.gear-panel');
+  const isMobile = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+
+  if(!isMobile) return;
+
+  panels.forEach(p=>{
+    p.addEventListener('click',()=>{
+      panels.forEach(x=>x.classList.remove('mobile-active'));
+      p.classList.add('mobile-active');
+    });
+  });
+  if(panels.length) panels[0].classList.add('mobile-active');
+})();
+</script>
+</body>
+</html>
