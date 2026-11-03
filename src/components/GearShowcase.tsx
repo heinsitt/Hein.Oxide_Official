@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Camera,
   Layers,
@@ -16,13 +16,107 @@ import {
   Aperture,
   Film as FilmIcon
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { GEAR_ITEMS, GearItem } from '../data/gear';
 import { CINEMATIC_EASE } from './CinematicTransition';
 
 interface GearShowcaseProps {
   onSelectFilmById?: (id: string) => void;
 }
+
+interface ParallaxGearCardProps {
+  gear: GearItem;
+  idx: number;
+  onInspect: (gear: GearItem) => void;
+}
+
+const ParallaxGearCard: React.FC<ParallaxGearCardProps> = ({ gear, idx, onInspect }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start']
+  });
+
+  // Subtle, smooth parallax displacement and gentle breathing scale
+  const y = useTransform(scrollYProgress, [0, 1], [-22, 22]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [1.14, 1.08, 1.14]);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-30px' }}
+      transition={{ duration: 0.5, delay: idx * 0.08, ease: CINEMATIC_EASE }}
+      className="group bg-[#0d1411] border border-white/10 rounded-2xl overflow-hidden hover:border-[#d9803f]/50 transition-all duration-300 flex flex-col justify-between shadow-lg"
+    >
+      {/* Media Image Showcase with Parallax Drift */}
+      <div>
+        <div className="relative aspect-[4/3] overflow-hidden bg-black">
+          <motion.img
+            src={gear.image}
+            alt={gear.name}
+            loading="lazy"
+            style={{ y, scale }}
+            className="w-full h-full object-cover will-change-transform"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0d1411] via-transparent to-black/35 pointer-events-none" />
+
+          {/* Category Label */}
+          <div className="absolute top-3 left-3 text-[10px] uppercase tracking-wider font-mono text-[#d9803f] bg-black/60 px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10">
+            {gear.category}
+          </div>
+
+          {/* 3D Model Badge for Mavic Air 2 */}
+          {gear.id === 'mavic-air-2' && (
+            <a
+              href="#studio-3d"
+              className="absolute top-3 right-3 text-[10px] font-mono uppercase text-white bg-[#14221a] hover:bg-[#1c3225] border border-[#d9803f]/40 px-2 py-1 rounded-md flex items-center gap-1 transition-colors"
+              title="Interactive 3D Simulation Available"
+            >
+              <Box className="w-3 h-3 text-[#d9803f]" />
+              <span>3D Studio</span>
+            </a>
+          )}
+        </div>
+
+        {/* Body Content */}
+        <div className="p-5 sm:p-6">
+          <div className="text-xs text-[#e9be86] font-medium mb-1">
+            {gear.role}
+          </div>
+          <h3 className="font-serif text-xl font-normal text-white group-hover:text-[#d9803f] transition-colors">
+            {gear.name}
+          </h3>
+          <p className="mt-2 text-xs text-[#f3ede2]/70 leading-relaxed line-clamp-2">
+            {gear.summary}
+          </p>
+
+          {/* Key Technical Highlights */}
+          <div className="mt-4 pt-4 border-t border-white/5 space-y-2 text-[11px] font-mono">
+            {gear.specs.slice(0, 3).map((spec, sIdx) => (
+              <div key={sIdx} className="flex items-center justify-between text-[#f3ede2]/70">
+                <span className="text-white/40">{spec.label}:</span>
+                <span className="text-white truncate max-w-[150px]">{spec.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Trigger Action */}
+      <div className="px-5 pb-5 pt-2">
+        <button
+          onClick={() => onInspect(gear)}
+          className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-[#d9803f] text-white hover:text-[#07090a] font-medium text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-1.5"
+        >
+          <span>View Field Specs</span>
+          <ArrowUpRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </motion.div>
+  );
+};
 
 export const GearShowcase: React.FC<GearShowcaseProps> = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -156,81 +250,15 @@ export const GearShowcase: React.FC<GearShowcaseProps> = () => {
             </table>
           </div>
         ) : (
-          /* MODERN USER-FRIENDLY GEAR DECK */
+          /* MODERN USER-FRIENDLY GEAR DECK WITH SUBTLE PARALLAX SCROLL */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredGear.map((gear, idx) => (
-              <motion.div
+              <ParallaxGearCard
                 key={gear.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-30px' }}
-                transition={{ duration: 0.5, delay: idx * 0.08, ease: CINEMATIC_EASE }}
-                className="group bg-[#0d1411] border border-white/10 rounded-2xl overflow-hidden hover:border-[#d9803f]/50 transition-all duration-300 flex flex-col justify-between shadow-lg"
-              >
-                {/* Media Image Showcase */}
-                <div>
-                  <div className="relative aspect-[4/3] overflow-hidden bg-black">
-                    <img
-                      src={gear.image}
-                      alt={gear.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 ease-out"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0d1411] via-transparent to-black/30 pointer-events-none" />
-
-                    {/* Category Label */}
-                    <div className="absolute top-3 left-3 text-[10px] uppercase tracking-wider font-mono text-[#d9803f] bg-black/60 px-2.5 py-1 rounded-md backdrop-blur-sm border border-white/10">
-                      {gear.category}
-                    </div>
-
-                    {/* 3D Model Badge for Mavic Air 2 */}
-                    {gear.id === 'mavic-air-2' && (
-                      <a
-                        href="#studio-3d"
-                        className="absolute top-3 right-3 text-[10px] font-mono uppercase text-white bg-[#14221a] hover:bg-[#1c3225] border border-[#d9803f]/40 px-2 py-1 rounded-md flex items-center gap-1 transition-colors"
-                        title="Interactive 3D Simulation Available"
-                      >
-                        <Box className="w-3 h-3 text-[#d9803f]" />
-                        <span>3D Studio</span>
-                      </a>
-                    )}
-                  </div>
-
-                  {/* Body Content */}
-                  <div className="p-5 sm:p-6">
-                    <div className="text-xs text-[#e9be86] font-medium mb-1">
-                      {gear.role}
-                    </div>
-                    <h3 className="font-serif text-xl font-normal text-white group-hover:text-[#d9803f] transition-colors">
-                      {gear.name}
-                    </h3>
-                    <p className="mt-2 text-xs text-[#f3ede2]/70 leading-relaxed line-clamp-2">
-                      {gear.summary}
-                    </p>
-
-                    {/* Key Technical Highlights */}
-                    <div className="mt-4 pt-4 border-t border-white/5 space-y-2 text-[11px] font-mono">
-                      {gear.specs.slice(0, 3).map((spec, sIdx) => (
-                        <div key={sIdx} className="flex items-center justify-between text-[#f3ede2]/70">
-                          <span className="text-white/40">{spec.label}:</span>
-                          <span className="text-white truncate max-w-[150px]">{spec.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Trigger Action */}
-                <div className="px-5 pb-5 pt-2">
-                  <button
-                    onClick={() => setInspectedGear(gear)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-[#d9803f] text-white hover:text-[#07090a] font-medium text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-1.5"
-                  >
-                    <span>View Field Specs</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </motion.div>
+                gear={gear}
+                idx={idx}
+                onInspect={(item) => setInspectedGear(item)}
+              />
             ))}
           </div>
         )}
